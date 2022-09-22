@@ -70,6 +70,7 @@ var dfu = {};
     };
 
     dfu.Device.prototype.logDebug = function(msg) {
+        console.log("Debug: ",msg);
 
     };
 
@@ -465,6 +466,7 @@ var dfu = {};
         });
     };
 
+    dfu.Device.prototype.erase = function() { return this.requestOut(dfu.ERASE); };
     dfu.Device.prototype.download = function(data, blockNum) {
         return this.requestOut(dfu.DNLOAD, data, blockNum);
     };
@@ -486,7 +488,7 @@ var dfu = {};
             data =>
                 Promise.resolve({
                     "status": data.getUint8(0),
-                    "pollTimeout": data.getUint32(1, true) & 0xFFFFFF,
+                    "pollTimeout": 5, // data.getUint32(1, true) & 0xFFFFFF,
                     "state": data.getUint8(4)
                 }),
             error =>
@@ -620,6 +622,7 @@ var dfu = {};
         this.logInfo("Manifesting new firmware");
 
         if (manifestationTolerant) {
+            this.logInfo("Manifestation tolerant")
             // Transition to MANIFEST_SYNC state
             let dfu_status;
             try {
@@ -641,6 +644,7 @@ var dfu = {};
                 }
             }
         } else {
+            this.logInfo("manifestation not tolerant");
             // Try polling once to initiate manifestation
             try {
                 let final_status = await this.getStatus();
@@ -652,12 +656,14 @@ var dfu = {};
 
         // Reset to exit MANIFEST_WAIT_RESET
         try {
+            this.logInfo("Attempting a device reset");
             await this.device_.reset();
+            this.logInfo("Done waiting;");
         } catch (error) {
             if (error == "NetworkError: Unable to reset the device." ||
                 error == "NotFoundError: Device unavailable." ||
                 error == "NotFoundError: The device was disconnected.") {
-                this.logDebug("Ignored reset error");
+                this.logDebug("Ignored reset error ", error);
             } else {
                 throw "Error during reset for manifestation: " + error;
             }
