@@ -5,6 +5,8 @@
     <title>WebUSB DFU</title>
     <script src="dfu.js"></script>
     <script src="dfu-util.js"></script>
+    <script type="text/javascript" src="focus.js" ></script>
+
     <style>
       p.warning {
         color: red;
@@ -53,5 +55,16 @@
         </fieldset>
       </form>
     </fieldset>
+    <button id="go">Erase EEPROM</button>
+
+
+    
+        <div class="dialog" id="found-device-need-bootloader" style="display: none;>
+<h1>
+  Your keyboard isn't in bootloader mode
+</h1>
+<p>Disconnect your Model 100 from the computer, press the <b>Prog</b> key in the top left corner, plug the keyboard in, and then click <i>Try again</i> below.</p>
+    </div> 
+
   </body>
 </html>

@@ -158,3 +158,10 @@ label, legend, fieldset {
   display: block;
   margin-bottom: .5rem;
   font-weight: 600; }
+
+
+.found-device-need-bootloader {
+  display: none;
+
+
+}

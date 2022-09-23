@@ -457,9 +457,18 @@ var device = null;
                 navigator.usb.requestDevice({ 'filters': filters }).then(
                     async selectedDevice => {
                         let interfaces = dfu.findDeviceDfuInterfaces(selectedDevice);
-                        if (interfaces.length == 0) {
+                        console.log(selectedDevice.productId);
+
+                        if (selectedDevice.productId == 0x0006) { 
                             console.log(selectedDevice);
-                            statusDisplay.textContent = "The selected device does not have any USB DFU interfaces.";
+                            document.getElementById("found-device-need-bootloader").set
+                            statusDisplay.textContent = "Your Model 100 is in keyboard mode";
+                            
+
+                        }
+                       else  if (interfaces.length == 0) {
+                            console.log(selectedDevice);
+                            statusDisplay.textContent = "The sxelected device does not have any USB DFU interfaces.";
                         } else if (interfaces.length == 1) {
                             await fixInterfaceNames(selectedDevice, interfaces);
                             device = await connect(new dfu.Device(selectedDevice, interfaces[0]));
