@@ -237,7 +237,7 @@ var device = null;
 
         let searchParams = new URLSearchParams(window.location.search);
         let fromLandingPage = false;
-        let vid = parseInt("0x3496"); // Default to keyboardio devices
+        let vid;// = parseInt("0x3496"); // Default to keyboardio devices
         // Set the vendor ID from the landing page URL
         if (searchParams.has("vid")) {
             const vidString = searchParams.get("vid");
