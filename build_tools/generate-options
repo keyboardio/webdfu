@@ -1,0 +1,48 @@
+const fs = require('fs');
+const path = require('path');
+
+// Path to your static HTML file
+const htmlFilePath = './index.html';
+
+// Get subdirectories of the "firmware" directory
+const getSubdirectories = (srcPath) => {
+    return fs.readdirSync(srcPath)
+        .filter(file => fs.statSync(path.join(srcPath, file)).isDirectory());
+}
+
+const subdirectories = getSubdirectories('./firmware');
+
+// Convert subdirectories to <option> tags
+const options = subdirectories.map(dir => `<option value="${dir}">${dir}</option>`).join('\n');
+
+// Read the static HTML file
+fs.readFile(htmlFilePath, 'utf8', (err, data) => {
+    if (err) {
+        console.error('An error occurred:', err);
+        return;
+    }
+
+    // Locate tokens and replace the content between them with generated options
+    const startToken = '<!--START_FIRMWARE_OPTIONS-->';
+    const endToken = '<!--END_FIRMWARE_OPTIONS-->';
+    const startTokenIndex = data.indexOf(startToken);
+    const endTokenIndex = data.indexOf(endToken);
+
+    if (startTokenIndex === -1 || endTokenIndex === -1) {
+        console.error('Tokens not found in the HTML file.');
+        return;
+    }
+
+    const beforeToken = data.substring(0, startTokenIndex + startToken.length);
+    const afterToken = data.substring(endTokenIndex);
+    const newData = beforeToken + '\n' + options + '\n' + afterToken;
+
+    // Write back to the file
+    fs.writeFile(htmlFilePath, newData, 'utf8', (err) => {
+        if (err) {
+            console.error('An error occurred:', err);
+            return;
+        }
+        console.log('Options generated successfully!');
+    });
+});

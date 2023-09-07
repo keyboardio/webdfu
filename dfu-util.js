@@ -272,17 +272,22 @@ var device = null;
 
         let firmwareFile = null;
         let downloadLog = document.querySelector("#downloadLog");
+	    let firmwareVersionSelect = document.getElementById('firmwareVersion');
 
         let manifestationTolerant = true;
 
-        fetch("firmware.bin").then((response) => {
-            return response.arrayBuffer();
-        }).then((body) => {
-            console.log("Body is ",body)
-            firmwareFile= body ;
-        
-        });
-
+        function fetchSelectedFirmware() {
+	        let firmwareVersion = firmwareVersionSelect.options[firmwareVersionSelect.selectedIndex].value;
+	
+	        console.log("Firmware filename is ", firmwareVersion);
+	        fetch(firmwareVersion+"/Keyboardio/Model100/default.bin").then((response) => {
+	            return response.arrayBuffer();
+	        }).then((body) => {
+	            console.log("Body is ",body)
+	            firmwareFile= body ;
+	        
+	        });
+        }
         //let device;
 
         function onDisconnect(reason) {
@@ -511,7 +516,7 @@ var device = null;
             }
       
             
-             
+            fetchSelectedFirmware();     
             if (device && firmwareFile != null) {
                 setLogContext(downloadLog);
                 clearLog(downloadLog);
