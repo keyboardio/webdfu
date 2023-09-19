@@ -46,10 +46,16 @@ const readFocusResponse = async () => {
 
 document.addEventListener("DOMContentLoaded", (event) => {
   document.getElementById("go").addEventListener("click", async () => {
+      try { 
     await openPort();
 
     await focusEraseEeprom();
     //this does not return data yet. :(
     await readFocusResponse();
+      } finally {
+        let dfuDisplay = document.querySelector("#dfuInfo");
+
+      dfuDisplay.textContent += "\n" + "EEPROM Erased - You should be all set.\n";
+      };
   });
 });

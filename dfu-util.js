@@ -276,17 +276,14 @@ var device = null;
 
         let manifestationTolerant = true;
 
-        function fetchSelectedFirmware() {
+        async function fetchSelectedFirmware() {
 	        let firmwareVersion = firmwareVersionSelect.options[firmwareVersionSelect.selectedIndex].value;
 	
 	        console.log("Firmware filename is ", firmwareVersion);
-	        fetch(firmwareVersion+"/Keyboardio/Model100/default.bin").then((response) => {
-	            return response.arrayBuffer();
-	        }).then((body) => {
-	            console.log("Body is ",body)
-	            firmwareFile= body ;
-	        
-	        });
+	        const response = await fetch("firmware/"+firmwareVersion+"/Keyboardio/Model100/default.bin");
+            const firmware = await response.arrayBuffer();
+            console.log (firmware);
+            return firmware;
         }
         //let device;
 
@@ -516,7 +513,7 @@ var device = null;
             }
       
             
-            fetchSelectedFirmware();     
+            firmwareFile = await fetchSelectedFirmware();     
             if (device && firmwareFile != null) {
                 setLogContext(downloadLog);
                 clearLog(downloadLog);
